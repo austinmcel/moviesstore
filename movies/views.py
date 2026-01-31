@@ -73,4 +73,19 @@ def report_review(request, id, review_id):
         return redirect('movies.show', id=id)
     else:
         return redirect('movies.show', id=id)
+@login_required
+def view_reports(request, id, review_id):
+    review = get_object_or_404(Review, id=review_id,)
+    reports = Report.objects.filter(review=review)
+    template_data = {}
+    template_data['title'] = 'View Reports'
+    template_data['review'] = review
+    template_data['reports'] = reports
+    return render(request, 'movies/view_reports.html', {'template_data': template_data})
+@login_required
+def delete_review(request, id, review_id):
+    review = Review.objects.get(id=review_id)
+    movie_id = review.movie.id
+    review.delete()
+    return redirect('movies.show', id = id)
 
